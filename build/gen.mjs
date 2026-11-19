@@ -392,8 +392,10 @@ function card(x, y, c, index) {
   g.push(rect(x, y, cw, cardH, 'none', `stroke="${INK}" stroke-width="1.2"`));
   // number badge in the region's colour, then the tag
   const tw = c.tag.length * 5.9 + 16;
-  g.push(rect(x + 8, y + 8, tw, 16, REGION_COLOUR[c.region]));
-  g.push(txt(x + 14, y + 19.6, c.tag, { size: 8.6, family: SANS, weight: 'bold', fill: PAPER, spacing: 0.7 }));
+  g.push(rect(x + 8, y + 8, 18, 16, PAPER, `stroke="${REGION_COLOUR[c.region]}" stroke-width="1.2"`));
+  g.push(txt(x + 17, y + 19.6, String(c.num), { size: 9, family: SANS, weight: 'bold', fill: REGION_COLOUR[c.region], anchor: 'middle' }));
+  g.push(rect(x + 28, y + 8, tw, 16, REGION_COLOUR[c.region]));
+  g.push(txt(x + 34, y + 19.6, c.tag, { size: 8.6, family: SANS, weight: 'bold', fill: PAPER, spacing: 0.7 }));
   const hy = y + artH + 7;
   g.push(ln(x + 8, hy - 3, x + cw - 8, hy - 3, INK, 1));
   const size = 19, lh = 20;
@@ -473,13 +475,14 @@ if (briefBottom > 950) throw new Error(`briefs overrun the footer: ${briefBottom
 // the region strip, above the briefs
 let stripX = mapX + MAP_W + 14;
 a(txt(stripX, SEC_Y + 6, 'BY REGION', { size: 8.6, family: SANS, weight: 'bold', fill: RED, spacing: 1.4 }));
-stripX += textWidth('BY REGION', 8.6, 1.4) + 12;
+stripX += textWidth('BY REGION', 8.6, 1.4) + 14;
 for (const rk of ['EU', 'AP', 'AM', 'AF']) {
   a(circ(stripX + 3.2, SEC_Y + 3.2, 3.2, REGION_COLOUR[rk]));
-  const label = `${count[rk]}`;
-  a(txt(stripX + 9, SEC_Y + 6, label, { size: 8.6, family: SANS, weight: 'bold', fill: INK2 }));
-  stripX += textWidth(label, 8.6) + 22;
+  const label = `${REGION_NAME[rk]} ${count[rk]}`;
+  a(txt(stripX + 10, SEC_Y + 6, label, { size: 8.4, family: SANS, weight: 'bold', fill: INK2 }));
+  stripX += textWidth(label, 8.4) + 20;
 }
+if (stripX > W - M) throw new Error(`the region ribbon overruns: ${Math.round(stripX)}`);
 
 let briefNum = 8; // 1 hero + 6 cards precede the briefs
 cols.forEach((slice, ci) => {
@@ -495,12 +498,15 @@ cols.forEach((slice, ci) => {
 });
 
 // ---------------------------------------------------------------- footer
-const FRY = 962;
+const FRY = 950;
 a(ln(M, FRY - 10, W - M, FRY - 10, INK, 1.6));
-a(rect(M, FRY, 306, 34, 'none', `stroke="${RED}" stroke-width="1.2"`));
+// The date check proves the one-day rule twice: what is on the page, and what
+// was deliberately kept off it for having first broken the day before.
+a(rect(M, FRY, 540, 48, 'none', `stroke="${RED}" stroke-width="1.2"`));
 a(txt(M + 8, FRY + 13, 'DATE CHECK', { size: 8.6, family: SANS, weight: 'bold', fill: RED, spacing: 1.6 }));
-a(txt(M + 8, FRY + 26, 'Every item first reported 19 Nov 2026 (UTC).', { size: 8.4, family: SANS, fill: INK2 }));
-a(txt(W - M, FRY + 13, `THURSDAY 19 NOVEMBER 2026 · ${TOTAL} STORIES AS REPORTED`, { size: 8.6, family: SANS, fill: INK2, anchor: 'end' }));
+a(txt(M + 8, FRY + 26, 'Every item here was first reported on 19 Nov 2026 (UTC).', { size: 8.3, family: SANS, fill: INK2 }));
+a(txt(M + 8, FRY + 38, 'Kept off as 18 Nov firsts: Voyager 1 at one light-day, the House speaker vote, the COP31 draft.', { size: 8.1, family: SANS, fill: INK2 }));
+a(txt(W - M, FRY + 13, `${TOTAL} STORIES · SIX CONTINENTS · 19 NOVEMBER 2026`, { size: 8.6, family: SANS, fill: INK2, anchor: 'end' }));
 a(txt(W - M, FRY + 26, 'AP · REUTERS · BBC · ALJAZEERA · DW · FRANCE 24 · UN', { size: 8.2, family: SANS, fill: MUTE, anchor: 'end' }));
 
 a('</svg>');
