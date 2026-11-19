@@ -96,7 +96,7 @@ const HERO = {
   num: 1,
   region: 'AP',
   kicker: 'ASIA · DIPLOMACY',
-  head: ['THREE POWERS,', 'ONE TABLE'],
+  head: ['Three powers,', 'one table'],
   stand: ['Trump, Xi and Putin hold their', 'first three-way meeting, on the', 'sidelines of APEC in Shenzhen.'],
   body: ['Nuclear arms and the war in Ukraine are on the agenda.', 'Europe, absent from the table, fears a settlement agreed', 'over its head.'],
 };
@@ -104,22 +104,22 @@ const HERO = {
 // deck: two or three short lines of body copy, so a card reads as a story
 const CARDS = [
   { tag: 'THE HAGUE · LAW', region: 'AP', art: 'icj',
-    head: ['WORLD COURT FINDS', 'GENOCIDE IN MYANMAR'],
+    head: ['World Court finds', 'genocide in Myanmar'],
     deck: ['The ICJ delivers its first genocide verdict', 'in decades, against Myanmar over the 2017', 'campaign that drove out 730,000 Rohingya.'] },
   { tag: 'MARKETS · IPO', region: 'AM', art: 'ipo',
-    head: ['ANTHROPIC DEBUTS', 'AT $1.5 TRILLION'],
+    head: ['Anthropic debuts', 'at $1.5 trillion'],
     deck: ['Priced at $83 a share, the Claude maker', 'sold 980m shares and raised $81.3bn in the', 'largest listing on record, then began trading.'] },
   { tag: 'CULTURE · GAMES', region: 'AM', art: 'gta',
-    head: ['GTA VI ARRIVES', 'AFTER 13 YEARS'],
+    head: ['GTA VI arrives', 'after 13 years'],
     deck: ['Rockstar\'s sequel unlocks zone by zone,', 'ending a wait that began with GTA V in 2013.', 'Pre-orders ran to 15.9m copies.'] },
   { tag: 'EUROPE · WAR', region: 'EU', art: 'kerch',
-    head: ['CRIMEAN BRIDGE', 'STRUCK AGAIN'],
+    head: ['Crimean Bridge', 'struck again'],
     deck: ['Traffic halts on the Kerch crossing after a', 'fresh attack; Kyiv has hit the link between', 'Russia and occupied Crimea repeatedly.'] },
   { tag: 'THE GULF · ENERGY', region: 'AF', art: 'hormuz',
-    head: ['TANKERS MINED', 'OFF HORMUZ'],
+    head: ['Tankers mined', 'off Hormuz'],
     deck: ['Three tankers burn after hitting mines east', 'of the strait, says Iran\'s Revolutionary Guard,', 'as the IEA warns of an energy crisis.'] },
   { tag: 'ANTALYA · CLIMATE', region: 'EU', art: 'cop31',
-    head: ['COP31 STALLS', 'ON WHO PAYS'],
+    head: ['COP31 stalls', 'on who pays'],
     deck: ['Ministers take over the text with the', 'adaptation fund and a fossil-fuel phase-out', 'still unresolved as the summit nears its end.'] },
 ];
 
@@ -371,7 +371,7 @@ const hw = W - M - hx;
 a(rect(hx, HY + 2, 24, 20, REGION_COLOUR[HERO.region]));
 a(txt(hx + 12, HY + 17, String(HERO.num), { size: 12.5, family: SANS, weight: 'bold', fill: PAPER, anchor: 'middle' }));
 a(txt(hx + 32, HY + 17, HERO.kicker, { size: 11, family: LSANS, weight: 'bold', fill: RED, spacing: 2 }));
-a(block(hx, HY + 58, HERO.head, { size: 33, family: COND, weight: 'bold', lh: 34 }));
+a(block(hx, HY + 58, HERO.head, { size: 36, family: SERIF, weight: 'bold', lh: 38 }));
 a(ln(hx, HY + 97, hx + 50, HY + 97, RED, 3));
 a(block(hx, HY + 119, HERO.stand, { size: 15, family: ROMAN, lh: 18, fill: INK2 }));
 a(ln(hx, HY + 158, hx + hw - 6, HY + 158, '#C9BFAC', 0.9));
@@ -396,7 +396,7 @@ function card(x, y, c, index) {
   g.push(txt(x + 14, y + 19.6, c.tag, { size: 8.6, family: SANS, weight: 'bold', fill: PAPER, spacing: 0.7 }));
   const hy = y + artH + 7;
   g.push(ln(x + 8, hy - 3, x + cw - 8, hy - 3, INK, 1));
-  const size = 16, lh = 17.5;
+  const size = 19, lh = 20;
   const first = hy + size * 0.84;
   g.push(c.head.map((s, i) => txt(x + 9, first + i * lh, s, { size, family: COND, weight: 'bold' })).join(''));
   // deck: body copy that makes the card a story
