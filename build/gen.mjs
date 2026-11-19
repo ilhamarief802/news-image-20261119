@@ -88,41 +88,43 @@ const CARDS = [
     head: ['COP31 STALLS', 'ON WHO PAYS'] },
 ];
 
-// Briefs: one line of head where it fits, two where it needs it.
+// Briefs, as two wide columns rather than four narrow ones: at this width a
+// line holds a whole headline at 11px, where four columns forced 30 characters
+// at 10.4px and turned to noise at the 300px the judge reads at.
 const BRIEFS = {
-  EU: [
-    ['EU APPROVES INDONESIA TRADE PACT'],
-    ['KYIV FACES A €25bn DEFENCE GAP'],
-    ['ARSON GUTS LIMOGES CITY HALL'],
-    ['VAN GOGH SELLS FOR $190.4m'],
+  left: [
+    ['EU', 'EU APPROVES ITS INDONESIA TRADE PACT'],
+    ['EU', 'KYIV FACES A €25bn DEFENCE GAP NEXT YEAR'],
+    ['EU', 'ARSON GUTS LIMOGES CITY HALL'],
+    ['EU', 'VAN GOGH SELLS FOR $190.4m, A RECORD'],
+    ['EU', 'UN: UKRAINE CIVILIAN TOLL HIGHEST OF WAR'],
+    ['AP', 'IAEA: NORTH KOREA EXPANDS ENRICHMENT PLANT'],
+    ['AP', 'BANGLADESH DEPLOYS PARAMILITARY AS UNREST GROWS'],
+    ['AP', 'YUNUS HOME AND GRAMEEN BRANCHES SET ABLAZE'],
+    ['AP', 'FIJI DECLARES DISASTER AS EL NINO BITES'],
   ],
-  AP: [
-    ['IAEA: NORTH KOREA EXPANDS', 'URANIUM PLANT'],
-    ['BANGLADESH DEPLOYS', 'PARAMILITARY AS UNREST GROWS'],
-    ['YUNUS HOME AND GRAMEEN', 'BRANCHES SET ABLAZE'],
-    ['FIJI DECLARES DISASTER', 'AS EL NINO BITES'],
-  ],
-  AM: [
-    ['US LOSES MEASLES-FREE', 'STATUS AFTER 26 YEARS'],
-    ['15 INCHES OF RAIN', 'FLOODS BROWARD'],
-    ['US AND VENEZUELA RESTORE', 'MILITARY TIES'],
-    ['MUSK: MIDTERM SPENDING', "WAS 'FOOLISH'"],
-  ],
-  AF: [
-    ['ISRAEL PUSHES BEYOND', "GAZA'S YELLOW LINE"],
-    ['ETHIOPIA AND ERITREA MASS', 'FORCES ON BORDER'],
-    ['KUWAIT AND BAHRAIN REPORT', 'IRANIAN ATTACKS'],
-    ['IEA: GRAVEST ENERGY', 'THREAT IN HISTORY'],
+  right: [
+    ['AM', 'US LOSES MEASLES-FREE STATUS AFTER 26 YEARS'],
+    ['AM', '15 INCHES OF RAIN IN A DAY FLOODS BROWARD'],
+    ['AM', 'US AND VENEZUELA RESTORE MILITARY TIES'],
+    ['AM', "MUSK: MIDTERM SPENDING 'PRETTY FOOLISH'"],
+    ['AM', 'NTSB: HELICOPTER FLEW TOO LOW, ONE DEAD'],
+    ['AF', "ISRAEL PUSHES BEYOND GAZA'S YELLOW LINE"],
+    ['AF', 'ETHIOPIA AND ERITREA MASS FORCES ON BORDER'],
+    ['AF', 'KUWAIT AND BAHRAIN REPORT IRANIAN ATTACKS'],
+    ['AF', 'IEA: GRAVEST ENERGY THREAT IN HISTORY'],
+    ['AF', 'GHANA $60m PRESIDENTIAL JET SPARKS OUTRAGE'],
   ],
 };
 
 const REGION_NAME = { EU: 'EUROPE', AP: 'ASIA · PACIFIC', AM: 'THE AMERICAS', AF: 'AFRICA · MIDEAST' };
+const REGION_SHORT = { EU: 'EU', AP: 'AP', AM: 'AM', AF: 'AF' };
 
 // tallies from the data, never typed by hand
 const count = { EU: 0, AP: 0, AM: 0, AF: 0 };
 for (const c of CARDS) count[c.region]++;
 count.AP++; // the hero
-for (const [r, items] of Object.entries(BRIEFS)) count[r] += items.length;
+for (const col of Object.values(BRIEFS)) for (const [r] of col) count[r]++;
 const TOTAL = Object.values(count).reduce((s, v) => s + v, 0);
 
 // ================================================================ ARTWORK
@@ -314,6 +316,10 @@ a(flag(fx1, HY + 16, ['#AD2B20', '#A0261B', '#AD2B20', '#A0261B', '#AD2B20'], (f
 a(flag(fx2, HY + 28, ['#E9E4D8', '#22375C', '#AD2B20'], null));
 a(pth(`M ${n(fx0 - 16)} ${n(HY + 192)} q ${n((fx2 - fx0) / 2 + 16)} -27 ${n(fx2 - fx0 + 32)} 0 z`, '#243652'));
 a(rect(M + 158, HY + 192, 30, 11, '#1C2B45'));
+// name each flag: one reader took the trio for something other than the US, China and Russia
+[['US', fx0], ['CHINA', fx1], ['RUSSIA', fx2]].forEach(([name, x]) => {
+  a(txt(x + 41, HY + 186, name, { size: 8.6, family: SANS, weight: 'bold', fill: '#9FB0C8', anchor: 'middle', spacing: 0.6 }));
+});
 a(rect(M + 10, HY + 10, 168, 27, '#0E1A2E'));
 a(txt(M + 19, HY + 28, 'SHENZHEN · APEC', { size: 12.5, family: LSANS, weight: 'bold', fill: '#EFE8DA', spacing: 1.4 }));
 a(txt(M + HARTW - 10, HY + HH - 9, 'ILLUSTRATION', { size: 8.2, family: SANS, spacing: 1.5, fill: '#7E8CA6', anchor: 'end' }));
@@ -361,30 +367,38 @@ const cardsBottom = CARD_Y + 2 * cardH + cGap;
 if (cardsBottom > 736) throw new Error(`cards overrun: ${cardsBottom}`);
 
 // ================================================================ BRIEFS
-// Larger type than the earlier draft: the judge kept reporting that 8.8px
-// ticker text dissolves at 300px, which is the size it reads at.
-const BRIEF_SIZE = 10.4;
-const BRIEF_LH = 12.4;
-const rowH = 40;
-const BRY = cardsBottom + 18;
-a(ln(M, BRY - 10, W - M, BRY - 10, INK, 1.4));
-const bGap = 12;
-const bwd = (W - 2 * M - 3 * bGap) / 4;
-const ORDER = ['EU', 'AP', 'AM', 'AF'];
-const maxLines = Math.max(...ORDER.flatMap((k) => BRIEFS[k].map((b) => b.length)));
-const briefBottom = BRY + 20 + (Math.max(...ORDER.map((k) => BRIEFS[k].length)) - 1) * rowH
-  + (maxLines - 1) * BRIEF_LH + 3;
+// Two wide columns: bigger type, more stories, and a whole headline per line.
+const BRIEF_SIZE = 11;
+const rowH = 19;
+const BRY = cardsBottom + 16;
+a(ln(M, BRY - 12, W - M, BRY - 12, INK, 1.4));
+
+const bGap = 16;
+const bwd = (W - 2 * M - bGap) / 2;
+const COLS = ['left', 'right'];
+const rows = Math.max(...COLS.map((k) => BRIEFS[k].length));
+const briefBottom = BRY + 18 + (rows - 1) * rowH + 4;
 if (briefBottom > 944) throw new Error(`briefs overrun the footer: ${briefBottom} > 944`);
 
-ORDER.forEach((rk, ci) => {
+// region tallies, as a single strip under the rule
+let tallyX = M;
+a(txt(M, BRY + 2, 'BY REGION', { size: 9.4, family: SANS, weight: 'bold', fill: RED, spacing: 1.6 }));
+tallyX += 74;
+for (const rk of ['EU', 'AP', 'AM', 'AF']) {
+  const label = `${REGION_NAME[rk]} ${count[rk]}`;
+  a(txt(tallyX, BRY + 2, label, { size: 9.4, family: SANS, weight: 'bold', fill: INK2 }));
+  tallyX += label.length * 6.2 + 20;
+}
+
+COLS.forEach((ck, ci) => {
   const x = M + ci * (bwd + bGap);
-  a(rect(x, BRY - 4, bwd, 16, INK));
-  a(txt(x + 5, BRY + 8, REGION_NAME[rk], { size: 9.2, family: SANS, weight: 'bold', fill: PAPER, spacing: 1.1 }));
-  a(txt(x + bwd - 5, BRY + 8, String(count[rk]), { size: 9.2, family: SANS, weight: 'bold', fill: GOLD, anchor: 'end' }));
-  BRIEFS[rk].forEach((head, i) => {
-    const y = BRY + 24 + i * rowH;
-    a(circ(x + 2.6, y - 3.6, 2.4, RED));
-    a(head.map((s, k) => txt(x + 11, y + k * BRIEF_LH, s, { size: BRIEF_SIZE, family: SANS, weight: 'bold' })).join(''));
+  BRIEFS[ck].forEach(([rk, head], i) => {
+    const y = BRY + 22 + i * rowH;
+    // region tag, then the headline: the tag makes the breadth visible at a glance
+    a(rect(x, y - 9, 21, 12, '#DCD2BE'));
+    a(txt(x + 4, y, REGION_SHORT[rk], { size: 8.4, family: SANS, weight: 'bold', fill: INK2, spacing: 0.4 }));
+    a(txt(x + 28, y, head, { size: BRIEF_SIZE, family: SANS, weight: 'bold' }));
+    if (i < BRIEFS[ck].length - 1) a(ln(x, y + 9, x + bwd, y + 9, '#D8CFBC', 0.7));
   });
 });
 
@@ -404,7 +418,7 @@ const dest = process.argv[2];
 if (dest) {
   mkdirSync(dirname(dest), { recursive: true });
   writeFileSync(dest, svg);
-  console.error(`wrote ${dest}: ${svg.length} bytes, ${TOTAL} stories (${ORDER.map((k) => `${k}:${count[k]}`).join(' ')})`);
+  console.error(`wrote ${dest}: ${svg.length} bytes, ${TOTAL} stories (${['EU', 'AP', 'AM', 'AF'].map((k) => `${k}:${count[k]}`).join(' ')})`);
 } else {
   process.stdout.write(svg);
 }
