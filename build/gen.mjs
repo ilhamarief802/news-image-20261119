@@ -339,8 +339,8 @@ if (heroCopyBottom > HY + HH) throw new Error(`hero copy overruns its block: ${h
 // ================================================================ CARDS
 const cGap = 12;
 const cw = (W - 2 * M - 2 * cGap) / 3;
-const cardH = 134, artH = 68;
-const CARD_Y = 452;
+const cardH = 150, artH = 84;
+const CARD_Y = 446;
 function card(x, y, c) {
   const g = [];
   g.push(rect(x, y, cw, cardH, SAND));
@@ -364,12 +364,12 @@ CARDS.forEach((c, i) => {
   a(card(M + col * (cw + cGap), CARD_Y + row * (cardH + cGap), c));
 });
 const cardsBottom = CARD_Y + 2 * cardH + cGap;
-if (cardsBottom > 736) throw new Error(`cards overrun: ${cardsBottom}`);
+if (cardsBottom > 762) throw new Error(`cards overrun: ${cardsBottom}`);
 
 // ================================================================ BRIEFS
 // Two wide columns: bigger type, more stories, and a whole headline per line.
-const BRIEF_SIZE = 11;
-const rowH = 19;
+const BRIEF_SIZE = 12;
+const rowH = 16;
 const BRY = cardsBottom + 16;
 a(ln(M, BRY - 12, W - M, BRY - 12, INK, 1.4));
 
